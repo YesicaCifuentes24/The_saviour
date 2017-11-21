@@ -1,9 +1,6 @@
 import pygame, cons
 from platform import Plataforma
 
-
-from player import Jugador
-
 class Nivel(object):
     # Lista de sprites usada en todos los niveles. Add or remove
     plataforma_lista = None

@@ -1,128 +1,117 @@
-import pygame
-import cons
-import sprite_functions
+import pygame, cons
+from sprite_functions import checkCollision, load_img, mirror_img
 
-class Player(pygame.sprite.Sprite):
-    """ This class represents the bar at the bottom that the player
-    controls. """
 
-    # -- Methods
+class Jugador(pygame.sprite.Sprite):
+    """ Esta clase representa la barra inferior que controla el protagonista """
+
+    # -- Atributos
+    # Establecemos el vector velocidad del protagonista
+    cambio_x = 0
+    cambio_y = 0
+
+    #Tamaño para resizear el sprite
+    height = 100
+    weight = 100
+    # Lista de todos los sprites contra los que podemos botar
+    nivel = None
+    run_right = []
+    run_left = []
+    idle_right = []
+    idle_left = []
+    dir = "R"
+    sprite_sheet_counter = 0
+    # -- Métodos
     def __init__(self):
-        """ Constructor function """
+        """ Función Constructor  """
 
-        # Call the parent's constructor
+        #  -- Llama al constructor padre
         super().__init__()
 
-        # -- Attributes
-        # Set speed vector of player
-        self.change_x = 0
-        self.change_y = 0
+        # Crea una imagen del bloque y lo rellena con color rojo.
+        # También podríamos usar una imagen guardada en disco
 
-        # This holds all the images for the animated walk left/right
-        # of our player
-        self.walking_frames_l = []
-        self.walking_frames_r = []
+        for i in range(0,10):
+            self.run_right.append(load_img("files/characters/player/Run__00"+str(i)+".png", self.weight,self.height))
+            self.run_left.append(mirror_img(load_img("files/characters/player/Run__00"+str(i)+".png", self.weight,self.height)))
 
-        # What direction is the player facing?
-        self.direction = "R"
+        self.idle_right.append(load_img("files/characters/player/Idle__000.png", self.weight, self.height))
+        self.idle_left.append(mirror_img(load_img("files/characters/player/Idle__000.png", self.weight, self.height)))
 
-        # List of sprites we can bump against
-        self.level = None
-        # Load all the right facing images into a list
-        image = pygame.transform.scale(pygame.image.load("files/characters/player/Climb_000.png"), (50,100))
+        self.image = self.run_left[0]
 
-        # Load all the right facing images, then flip them
-        # to face left.
-
-
-        # Set the image the player starts with
-        self.image = self.walking_frames_r[0]
-
-        # Set a reference to the image rect.
+        # Establecemos una referencia hacia la imagen rectangular
         self.rect = self.image.get_rect()
 
     def update(self):
-        """ Move the player. """
-        # Gravity
+        """ Desplazamos al protagonista. """
+        # Gravedad
         self.calc_grav()
 
-        # Move left/right
-        self.rect.x += self.change_x
-        pos = self.rect.x + self.level.world_shift
-        if self.direction == "R":
-            frame = (pos // 30) % len(self.walking_frames_r)
-            self.image = self.walking_frames_r[frame]
-        else:
-            frame = (pos // 30) % len(self.walking_frames_l)
-            self.image = self.walking_frames_l[frame]
+        # Desplazar izquierda/derecha
+        self.rect.x += self.cambio_x
 
-        # See if we hit anything
-        block_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
-        for block in block_hit_list:
-            # If we are moving right,
-            # set our right side to the left side of the item we hit
-            if self.change_x > 0:
-                self.rect.right = block.rect.left
-            elif self.change_x < 0:
-                # Otherwise if we are moving left, do the opposite.
-                self.rect.left = block.rect.right
+        # Comprobamos si hemos chocado contra algo
+        lista_impactos_bloques = pygame.sprite.spritecollide(self, self.nivel.plataforma_lista, False)
+        for bloque in lista_impactos_bloques:
+            # Si nos estamos desplazando hacia la derecha, hacemos que nuestro lado derecho sea el lado izquierdo del objeto que hemos tocado-
+            if self.cambio_x > 0:
+                self.rect.right = bloque.rect.left
+            elif self.cambio_x < 0:
+                # En caso contrario, si nos desplazamos hacia la izquierda, hacemos lo opuesto.
+                self.rect.left = bloque.rect.right
 
-        # Move up/down
-        self.rect.y += self.change_y
+        # Desplazar arriba/abajo
+        self.rect.y += self.cambio_y
 
-        # Check and see if we hit anything
-        block_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
-        for block in block_hit_list:
+        # Comprobamos si hemos chocado contra algo
+        lista_impactos_bloques = pygame.sprite.spritecollide(self, self.nivel.plataforma_lista, False)
+        for bloque in lista_impactos_bloques:
 
-            # Reset our position based on the top/bottom of the object.
-            if self.change_y > 0:
-                self.rect.bottom = block.rect.top
-            elif self.change_y < 0:
-                self.rect.top = block.rect.bottom
+            # Restablecemos nuestra posición basándonos en la parte superior/inferior del objeto.
+            if self.cambio_y > 0:
+                self.rect.bottom = bloque.rect.top
+            elif self.cambio_y < 0:
+                self.rect.top = bloque.rect.bottom
 
-            # Stop our vertical movement
-            self.change_y = 0
-
-            if isinstance(block, MovingPlatform):
-                self.rect.x += block.change_x
+            # Detenemos nuestro movimiento vertical
+            self.cambio_y = 0
 
     def calc_grav(self):
-        """ Calculate effect of gravity. """
-        if self.change_y == 0:
-            self.change_y = 1
+        """ Calculamos el efecto de la gravedad. """
+        if self.cambio_y == 0:
+            self.cambio_y = 1
         else:
-            self.change_y += .35
+            self.cambio_y += .35
 
-        # See if we are on the ground.
-        if self.rect.y >= cons.SCREEN_HEIGHT - self.rect.height and self.change_y >= 0:
-            self.change_y = 0
+        # Observamos si nos encontramos sobre el suelo.
+        if self.rect.y >= cons.SCREEN_HEIGHT - self.rect.height and self.cambio_y >= 0:
+            self.cambio_y = 0
             self.rect.y = cons.SCREEN_HEIGHT - self.rect.height
 
-    def jump(self):
-        """ Called when user hits 'jump' button. """
+    def saltar(self):
+        """ Llamado cuando el usuario pulsa el botón de 'saltar'. """
 
-        # move down a bit and see if there is a platform below us.
-        # Move down 2 pixels because it doesn't work well if we only move down 1
-        # when working with a platform moving down.
+        # Descendemos un poco y observamos si hay una plataforma debajo nuestro.
+        # Descendemos 2 píxels (con una plataforma que está  descendiendo, no funciona bien
+        # si solo descendemos uno).
         self.rect.y += 2
-        platform_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
+        lista_impactos_plataforma = pygame.sprite.spritecollide(self, self.nivel.plataforma_lista, False)
         self.rect.y -= 2
 
-        # If it is ok to jump, set our speed upwards
-        if len(platform_hit_list) > 0 or self.rect.bottom >= constants.SCREEN_HEIGHT:
-            self.change_y = -10
+        # Si está listo para saltar, aumentamos nuestra velocidad hacia arriba
+        if len(lista_impactos_plataforma) > 0 or self.rect.bottom >= cons.SCREEN_HEIGHT:
+            self.cambio_y = -10
 
-    # Player-controlled movement:
-    def go_left(self):
-        """ Called when the user hits the left arrow. """
-        self.change_x = -6
-        self.direction = "L"
+    # Movimiento controlado por el protagonista
+    def ir_izquierda(self):
+        """ Es llamado cuando el usuario pulsa la flecha izquierda """
+        self.cambio_x = -6
 
-    def go_right(self):
-        """ Called when the user hits the right arrow. """
-        self.change_x = 6
-        self.direction = "R"
+    def ir_derecha(self):
+        """ Es llamado cuando el usuario pulsa la flecha derecha """
+        self.cambio_x = 6
 
     def stop(self):
-        """ Called when the user lets off the keyboard. """
-        self.change_x = 0
+        """ Es llamado cuando el usuario abandona el teclado """
+        self.cambio_x = 0
