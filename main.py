@@ -39,8 +39,11 @@ def main():
                         end_execution()
                         sys.exit(0)
                     if m.cursor == 0:
-                        print("Empieza el juego")
                         sound.stop()
+                        end_execution()
+                        game = views.game()
+                        game.start()
+
                     if m.cursor == 1:
                         print("Menu help")
         m.draw_menu()

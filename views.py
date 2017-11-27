@@ -2,7 +2,7 @@ import pygame
 import levels
 import cons
 import characters
-
+import main
 
 
 class Menu:
@@ -40,6 +40,86 @@ class Menu:
             self.dest_surface.blit(text, (self.start[0],y))
             y+=50
         pygame.display.flip()
+
+class game():
+
+    def go_menu(self):
+        pygame.mixer.quit()
+        pygame.display.quit()
+        pygame.font.quit()
+        main.main()
+
+    def start(self):
+        pygame.display.init()
+        pygame.font.init()
+        pygame.mixer.init()
+
+        size = [cons.SCREEN_WIDTH, cons.SCREEN_HEIGHT]
+        screen = pygame.display.set_mode(size)
+
+        pygame.display.set_caption("Platformer with sprite sheets")
+
+        # Create all the levels
+        level_list = []
+
+        # Set the current level
+        active_sprite_list = pygame.sprite.Group()
+        current_level_no = 0
+
+        # Loop until the user clicks the close button.
+        done = False
+
+        # Used to manage how fast the screen updates
+        clock = pygame.time.Clock()
+
+        player = characters.Jugador()
+        player.rect.x = 0 + player.rect.left + 100
+        player.rect.y = cons.SCREEN_HEIGHT - player.rect.bottom - 20
+
+        pj = pygame.sprite.Group()
+        pj.add(player)
+
+        current_level = levels.Nivel_01(player)
+        player.nivel = current_level
+        # -------- Main Program Loop -----------
+        while not done:
+            for evento in pygame.event.get():  # El usuario realizó alguna acción
+                if evento.type == pygame.QUIT:  # Si el usuario hizo click en salir
+                    self.go_menu()
+
+                if evento.type == pygame.KEYDOWN:
+                    if evento.key == pygame.K_LEFT:
+                        player.ir_izquierda()
+                    if evento.key == pygame.K_RIGHT:
+                        player.ir_derecha()
+                    if evento.key == pygame.K_UP:
+                        player.saltar()
+
+                if evento.type == pygame.KEYUP:
+                    if evento.key == pygame.K_LEFT and player.cambio_x < 0:
+                        player.stop()
+                    if evento.key == pygame.K_RIGHT and player.cambio_x > 0:
+                        player.stop()
+
+            # Update the player.
+            active_sprite_list.update()
+
+            # Update items in the level
+            current_level.update()
+
+            # If the player gets near the right side, shift the world left (-x)
+            pj.update()
+            # ALL CODE TO DRAW SHOULD GO BELOW THIS COMMENT
+            current_level.draw(screen)
+            active_sprite_list.draw(screen)
+            pj.draw(screen)
+
+
+            pygame.display.flip()
+
+        self.go_menu()
+
+
 
 
 def xd():

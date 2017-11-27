@@ -20,7 +20,8 @@ class Jugador(pygame.sprite.Sprite):
     idle_right = []
     idle_left = []
     dir = "R"
-    sprite_sheet_counter = 0
+    sprite_sheet_counter_right = 0
+    sprite_sheet_counter_left = 0
     # -- Métodos
     def __init__(self):
         """ Función Constructor  """
@@ -50,6 +51,21 @@ class Jugador(pygame.sprite.Sprite):
 
         # Desplazar izquierda/derecha
         self.rect.x += self.cambio_x
+
+        if(self.dir == "R" and self.cambio_x > 0):
+            self.sprite_sheet_counter_left = 0
+            if(self.sprite_sheet_counter_right >= 9):
+                self.sprite_sheet_counter_right = 0
+            else:
+                self.sprite_sheet_counter_right+=1
+                self.image = self.run_right[self.sprite_sheet_counter_right]
+        elif(self.dir == "L" and self.cambio_x < 0):
+            self.sprite_sheet_counter_right = 0
+            if (self.sprite_sheet_counter_left >= 9):
+                self.sprite_sheet_counter_left = 0
+            else:
+                self.sprite_sheet_counter_left += 1
+                self.image = self.run_left[self.sprite_sheet_counter_left]
 
         # Comprobamos si hemos chocado contra algo
         lista_impactos_bloques = pygame.sprite.spritecollide(self, self.nivel.plataforma_lista, False)
@@ -106,10 +122,12 @@ class Jugador(pygame.sprite.Sprite):
     # Movimiento controlado por el protagonista
     def ir_izquierda(self):
         """ Es llamado cuando el usuario pulsa la flecha izquierda """
+        self.dir = "L"
         self.cambio_x = -6
 
     def ir_derecha(self):
         """ Es llamado cuando el usuario pulsa la flecha derecha """
+        self.dir = "R"
         self.cambio_x = 6
 
     def stop(self):
