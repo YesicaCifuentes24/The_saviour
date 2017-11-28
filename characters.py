@@ -1,12 +1,31 @@
 import pygame, cons
 from sprite_functions import checkCollision, load_img, mirror_img
 
+class Kunai(pygame.sprite.Sprite):
+    cambio_x = 8
+    dir = "R"
+    nivel = None
+    def __init__(self, direccion, x,y):
+        super().__init__()
+        self.dir = direccion
+        self.image = pygame.transform.scale(pygame.image.load("files\characters\player\Kunai.png"), (80,20))
+        self.image_r = pygame.transform.scale(pygame.image.load("files\characters\player\Kunai.png"), (80,20))
+        self.image_l = mirror_img(self.image)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def update(self):
+        if(self.dir == "R"):
+            self.image = self.image_r
+            self.rect.x += self.cambio_x
+        else:
+            self.image = self.image_l
+            self.rect.x -= self.cambio_x
+
 
 class Jugador(pygame.sprite.Sprite):
-    """ Esta clase representa la barra inferior que controla el protagonista """
 
-    # -- Atributos
-    # Establecemos el vector velocidad del protagonista
     cambio_x = 0
     cambio_y = 0
 

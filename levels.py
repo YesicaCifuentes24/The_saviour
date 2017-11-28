@@ -17,7 +17,6 @@ class Nivel(object):
 
     # Actualizamos elementos en el nivel
     def update(self):
-        """ Actualiza todo lo que este en este nivel."""
         self.plataforma_lista.update()
         self.enemigos_lista.update()
         self.elementos_lista.update()
