@@ -80,6 +80,7 @@ class game():
         player_kunai = pygame.sprite.Group()
         player_group.add(player)
 
+
         current_level = levels.Nivel_01(player)
         player.nivel = current_level
         # -------- Main Program Loop -----------
@@ -141,6 +142,7 @@ class game():
             active_sprite_list.draw(screen)
             player_group.draw(screen)
 
+            clock.tick(60)
 
             pygame.display.flip()
 

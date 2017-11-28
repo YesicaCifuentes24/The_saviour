@@ -1,6 +1,68 @@
 import pygame, cons
 from sprite_functions import checkCollision, load_img, mirror_img
 
+
+class Enemigo1(pygame.sprite.Sprite):
+    dir = "L"
+    cambio_x = -4
+    run_right = []
+    run_left = []
+    counter_mov = 0
+    sprite_sheet_counter_right = 0
+    sprite_sheet_counter_left = 0
+    sleep_image = 0
+    def __init__(self, x, y, time_mov = 0):
+        super().__init__()
+        for i in range(1,11):
+            self.run_right.append(pygame.transform.scale(pygame.image.load("files\characters\enemies\enemy1\Run"+ str(i) + ".png"),(40,80)))
+            self.run_left.append(mirror_img(pygame.transform.scale(pygame.image.load("files\characters\enemies\enemy1\Run" + str(i) + ".png"),(40, 80))))
+
+        self.image = self.run_right[0]
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.time_mov = time_mov
+
+    def change_direction(self):
+        if(self.dir == "L"):
+            self.dir = "R"
+            self.cambio_x = 4
+        else:
+            self.dir = "L"
+            self.cambio_x = -4
+
+    def update(self):
+        if(self.counter_mov >= self.time_mov):
+            self.counter_mov = 0
+            self.change_direction()
+        else:
+            self.counter_mov+=1
+            self.rect.x += self.cambio_x
+            if (self.dir == "R"):
+                self.sprite_sheet_counter_left=0
+                if(self.sprite_sheet_counter_right >= 9):
+                    self.sprite_sheet_counter_right=0
+                else:
+                    if(self.sleep_image >= 2):
+                        self.sleep_image = 0
+                        self.sprite_sheet_counter_right+=1
+                        self.image = self.run_right[self.sprite_sheet_counter_right]
+                    else:
+                        self.sleep_image+=1
+            else:
+                self.sprite_sheet_counter_right=0
+                if (self.sprite_sheet_counter_left >= 9):
+                    self.sprite_sheet_counter_left = 0
+                else:
+                    if (self.sleep_image >= 2):
+                        self.sleep_image = 0
+                        self.sprite_sheet_counter_left += 1
+                        self.image = self.run_left[self.sprite_sheet_counter_left]
+                    else:
+                        self.sleep_image+=1
+
+
+
 class Kunai(pygame.sprite.Sprite):
     cambio_x = 8
     dir = "R"
@@ -31,7 +93,7 @@ class Jugador(pygame.sprite.Sprite):
 
     #Tamaño para resizear el sprite
     height = 100
-    weight = 100
+    weight = 60
     # Lista de todos los sprites contra los que podemos botar
     nivel = None
     run_right = []

@@ -1,5 +1,6 @@
 import pygame, cons
 from platform import Plataforma
+import characters
 
 class Nivel(object):
     # Lista de sprites usada en todos los niveles. Add or remove
@@ -50,7 +51,7 @@ class Nivel(object):
 class Nivel_01(Nivel):
 
     def __init__(self, jugador):
-        Nivel.__init__(self, jugador)
+        super().__init__(jugador)
         self.limite=-3000
         self.enemigos_lista=pygame.sprite.Group()
         nivel = [
@@ -69,10 +70,15 @@ class Nivel_01(Nivel):
                     [1500, cons.SCREEN_HEIGHT-100, "caja"],
                     [1800, cons.SCREEN_HEIGHT-100, "caja"],
 
-                 ]
+        ]
 
         enemigos_config = [
-                ]
+                            characters.Enemigo1(1350,40, 70),
+                            characters.Enemigo1(1450,cons.SCREEN_HEIGHT-80, 300),
+
+        ]
+        for en in enemigos_config:
+            self.enemigos_lista.add(en)
         for plataforma in nivel:
             bloque = Plataforma(plataforma[0], plataforma[1])
             bloque.tipo=plataforma[2]
