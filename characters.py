@@ -177,7 +177,7 @@ class Jugador(pygame.sprite.Sprite):
         self.idle_left.append(mirror_img(load_img("files/characters/player/Idle__000.png", self.weight, self.height)))
 
         self.image = self.run_left[0]
-        self.blood = 100
+        self.blood = 50
         self.kunais = 20
         # Establecemos una referencia hacia la imagen rectangular
         self.rect = self.image.get_rect()

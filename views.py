@@ -66,7 +66,7 @@ class game():
         text = tipo.render("Kunais restantes: ", 1, cons.WHITE)
         screen.blit(text, (190, cons.SCREEN_HEIGHT + 20))
 
-        if(player.kunais >= 20):
+        if(player.kunais >= 15):
             color = cons.GREEN
         elif(player.kunais >= 10):
             color = cons.YELLOW
@@ -122,8 +122,9 @@ class game():
         player_group.add(player)
 
 
-        current_level = levels.Nivel_01(player)
+        current_level = levels.Portal(player)
         player.nivel = current_level
+        in_portal=False
         # -------- Main Program Loop -----------
         while not done:
             for evento in pygame.event.get():  # El usuario realizó alguna acción
@@ -144,14 +145,28 @@ class game():
                     if evento.key == pygame.K_RIGHT and player.cambio_x > 0:
                         player.stop()
                     if evento.key == pygame.K_SPACE:
-                        new_kunai = characters.Kunai(player.dir, player.rect.x, player.rect.y + 40)
-                        player_group.add(new_kunai)
-                        player_kunai.add(new_kunai)
+                        if(player.kunais > 0):
+                            new_kunai = characters.Kunai(player.dir, player.rect.x, player.rect.y + 40)
+                            player_group.add(new_kunai)
+                            player_kunai.add(new_kunai)
+                            player.kunais-=1
                     if evento.key == pygame.K_e:
                         for elementx in current_level.addons:
                             if(checkCollision(elementx,player)):
                                 if(elementx.tipo == "portal"):
-                                    print("TEPEADO")
+                                    current_level = levels.Portal(player)
+                                    player.nivel = current_level
+                                    in_portal = True
+                                elif(elementx.tipo == "medkit"):
+                                    player.blood = 100
+                                    current_level.addons.remove(elementx)
+                                elif(elementx.tipo == "backpack"):
+                                    player.kunais += 30
+                                    current_level.addons.remove(elementx)
+                                elif(elementx.tipo == "portal_b"):
+                                    print("Boss level")
+                                elif(elementx.tipo == "portal_m"):
+                                    print("game_over")
 
 
             ## Checkeo de colisiones
@@ -176,13 +191,21 @@ class game():
             pos_actual = player.rect.x + current_level.mov_fondo
             if pos_actual < current_level.limite:
                 player.rect.x = 120
-                self.current_nivel_no+=1
-                if(self.current_nivel_no == 1):
+                if(in_portal):
                     current_level = levels.Nivel_01(player)
-                elif(self.current_nivel_no == 2):
-                    current_level = levels.Nivel_02(player)
-                elif(self.current_nivel_no == 3):
-                    print("Ya papi")
+                    player.nivel = current_level
+                    player.rect.x = 1825
+                    player.rect.y = 20
+                    in_portal=False
+                else:
+                    self.current_nivel_no+=1
+                    if(self.current_nivel_no == 1):
+                        current_level = levels.Nivel_01(player)
+                    elif(self.current_nivel_no == 2):
+                        current_level = levels.Nivel_02(player)
+                        player.nivel = current_level
+                    elif(self.current_nivel_no == 3):
+                        print("Ya papi")
 
             # Update the player.
             active_sprite_list.update()
