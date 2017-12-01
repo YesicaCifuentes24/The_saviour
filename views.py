@@ -122,11 +122,23 @@ class game():
         player_group.add(player)
 
 
-        current_level = levels.Portal(player)
+        current_level = levels.Nivel_01(player)
         player.nivel = current_level
         in_portal=False
+        sound_die = True
         # -------- Main Program Loop -----------
         while not done:
+            if(player.blood <= 0):
+                player.blood=0
+                if(sound_die):
+                    sound = pygame.mixer.Sound("files/sounds/die.ogg")
+                    sound.play()
+                    sound_die=False
+                player.die()
+
+            if(player.muerto):
+                print("game_over")
+
             for evento in pygame.event.get():  # El usuario realizó alguna acción
                 if evento.type == pygame.QUIT:  # Si el usuario hizo click en salir
                     self.go_menu()
@@ -172,6 +184,24 @@ class game():
             ## Checkeo de colisiones
             for element in current_level.plataforma_lista:
                 pygame.sprite.spritecollide(element, player_kunai, True)
+
+
+            for enemigo in current_level.enemigos_lista:
+                if (checkCollision(player, enemigo)):
+                    print("choca")
+                    sound = pygame.mixer.Sound("files/sounds/hit.ogg")
+                    sound.play()
+                    player.blood -= 2
+                if (enemigo.blood <= 0):
+                    current_level.enemigos_lista.remove(enemigo)
+                for bala in player_kunai:
+                    if(checkCollision(bala,enemigo)):
+                        player_kunai.remove(bala)
+                        player_group.remove(bala)
+                        enemigo.blood -= 50
+
+
+
 
 
             if player.rect.x >= 500:

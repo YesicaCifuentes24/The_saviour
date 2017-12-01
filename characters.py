@@ -19,6 +19,7 @@ class Enemigo1(pygame.sprite.Sprite):
 
         self.image = self.run_right[0]
         self.rect = self.image.get_rect()
+        self.blood = 100
         self.rect.x = x
         self.rect.y = y
         self.time_mov = time_mov
@@ -70,6 +71,7 @@ class Enemigo2(pygame.sprite.Sprite):
         super().__init__()
         self.image = mirror_img(pygame.transform.scale(pygame.image.load("files\characters\enemies\enemy1\Run1.png"),(40, 80)))
         self.rect = self.image.get_rect()
+        self.blood = 100
         self.rect.x = x
         self.rect.y = y
         self.list = lista
@@ -156,9 +158,13 @@ class Jugador(pygame.sprite.Sprite):
     run_left = []
     idle_right = []
     idle_left = []
+    die_sheet = []
     dir = "R"
+    die_speed = 0
+    muerto=False
     sprite_sheet_counter_right = 0
     sprite_sheet_counter_left = 0
+    sprite_sheet_counter_die = 0
     # -- Métodos
     def __init__(self):
         """ Función Constructor  """
@@ -172,15 +178,30 @@ class Jugador(pygame.sprite.Sprite):
         for i in range(0,10):
             self.run_right.append(load_img("files/characters/player/Run__00"+str(i)+".png", self.weight,self.height))
             self.run_left.append(mirror_img(load_img("files/characters/player/Run__00"+str(i)+".png", self.weight,self.height)))
+            self.die_sheet.append(
+                mirror_img(load_img("files/characters/player/Dead__00" + str(i) + ".png", self.weight, self.height)))
 
         self.idle_right.append(load_img("files/characters/player/Idle__000.png", self.weight, self.height))
         self.idle_left.append(mirror_img(load_img("files/characters/player/Idle__000.png", self.weight, self.height)))
 
         self.image = self.run_left[0]
-        self.blood = 50
+        self.blood = 100
         self.kunais = 20
         # Establecemos una referencia hacia la imagen rectangular
         self.rect = self.image.get_rect()
+
+
+    def die(self):
+        if(self.die_speed >= 5):
+            if (self.sprite_sheet_counter_die >= 9):
+                self.muerto = True
+            else:
+                self.die_speed=0
+                self.image = self.die_sheet[self.sprite_sheet_counter_die]
+                self.sprite_sheet_counter_die+=1
+
+        else:
+            self.die_speed+=1
 
     def update(self):
         """ Desplazamos al protagonista. """
