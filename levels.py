@@ -75,6 +75,7 @@ class Nivel_01(Nivel):
         enemigos_config = [
                             characters.Enemigo1(1350,40, 70),
                             characters.Enemigo1(1450,cons.SCREEN_HEIGHT-80, 300),
+                            characters.Enemigo2(1600,cons.SCREEN_HEIGHT-90)
 
         ]
         for en in enemigos_config:

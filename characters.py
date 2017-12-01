@@ -62,6 +62,44 @@ class Enemigo1(pygame.sprite.Sprite):
                         self.sleep_image+=1
 
 
+class Enemigo2(pygame.sprite.Sprite):
+    cambio_y = 0
+    delay_jump = 0
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.transform.scale(pygame.image.load("files\characters\enemies\enemy1\Run1.png"),(40, 80))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def saltar(self):
+        self.cambio_y = -10
+
+    def calc_grav(self):
+        """ Calculamos el efecto de la gravedad. """
+        if self.cambio_y == 0:
+            self.cambio_y = 1
+        else:
+            self.cambio_y += .35
+
+        # Observamos si nos encontramos sobre el suelo.
+        if self.rect.y >= cons.SCREEN_HEIGHT - self.rect.height and self.cambio_y >= 0:
+            self.cambio_y = 0
+            self.rect.y = cons.SCREEN_HEIGHT - self.rect.height
+
+    def update(self):
+        """ Desplazamos al protagonista. """
+        # Gravedad
+        self.calc_grav()
+        if(self.delay_jump >= 100):
+            self.delay_jump = 0
+            self.saltar()
+        else:
+            self.delay_jump+=1
+        self.rect.y += self.cambio_y
+
+
+
 
 class Kunai(pygame.sprite.Sprite):
     cambio_x = 8
@@ -182,9 +220,9 @@ class Jugador(pygame.sprite.Sprite):
             self.cambio_y += .35
 
         # Observamos si nos encontramos sobre el suelo.
-        if self.rect.y >= cons.SCREEN_HEIGHT - self.rect.height and self.cambio_y >= 0:
+        if self.rect.y >= cons.SCREEN_HEIGHT - (self.rect.height -2) and self.cambio_y >= 0:
             self.cambio_y = 0
-            self.rect.y = cons.SCREEN_HEIGHT - self.rect.height
+            self.rect.y = cons.SCREEN_HEIGHT - (self.rect.height -2)
 
     def saltar(self):
         """ Llamado cuando el usuario pulsa el botón de 'saltar'. """
