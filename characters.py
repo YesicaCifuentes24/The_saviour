@@ -65,15 +65,23 @@ class Enemigo1(pygame.sprite.Sprite):
 class Enemigo2(pygame.sprite.Sprite):
     cambio_y = 0
     delay_jump = 0
-    def __init__(self, x, y):
+    list = None
+    def __init__(self, x, y, lista):
         super().__init__()
-        self.image = pygame.transform.scale(pygame.image.load("files\characters\enemies\enemy1\Run1.png"),(40, 80))
+        self.image = mirror_img(pygame.transform.scale(pygame.image.load("files\characters\enemies\enemy1\Run1.png"),(40, 80)))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.list = lista
 
     def saltar(self):
-        self.cambio_y = -10
+        self.rect.y += 2
+        lista_impactos_plataforma = pygame.sprite.spritecollide(self, self.list, False)
+        self.rect.y -= 2
+
+        # Si está listo para saltar, aumentamos nuestra velocidad hacia arriba
+        if len(lista_impactos_plataforma) > 0 or self.rect.bottom >= cons.SCREEN_HEIGHT:
+            self.cambio_y = -10
 
     def calc_grav(self):
         """ Calculamos el efecto de la gravedad. """
@@ -97,6 +105,16 @@ class Enemigo2(pygame.sprite.Sprite):
         else:
             self.delay_jump+=1
         self.rect.y += self.cambio_y
+
+        lista_impactos_bloques = pygame.sprite.spritecollide(self, self.list, False)
+        for bloque in lista_impactos_bloques:
+            if self.cambio_y > 0:
+                self.rect.bottom = bloque.rect.top
+            elif self.cambio_y < 0:
+                self.rect.top = bloque.rect.bottom
+
+            # Detenemos nuestro movimiento vertical
+            self.cambio_y = 0
 
 
 
@@ -159,7 +177,8 @@ class Jugador(pygame.sprite.Sprite):
         self.idle_left.append(mirror_img(load_img("files/characters/player/Idle__000.png", self.weight, self.height)))
 
         self.image = self.run_left[0]
-
+        self.blood = 100
+        self.kunais = 20
         # Establecemos una referencia hacia la imagen rectangular
         self.rect = self.image.get_rect()
 

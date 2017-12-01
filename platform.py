@@ -26,5 +26,7 @@ class Plataforma(pygame.sprite.Sprite):
             self.image=self.matriz[1][5]
         elif(self.tipo == "caja_adv"):
             self.image=self.matriz[0][2]
+        elif(self.tipo == "portal"):
+            self.image=self.matriz[6][5]
         else:
             self.image = self.matriz[0][0]

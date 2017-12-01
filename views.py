@@ -3,6 +3,7 @@ import levels
 import cons
 import characters
 import main
+from sprite_functions import checkCollision
 
 
 class Menu:
@@ -42,29 +43,69 @@ class Menu:
         pygame.display.flip()
 
 class game():
-
+    current_nivel_no = 1
     def go_menu(self):
         pygame.mixer.quit()
         pygame.display.quit()
         pygame.font.quit()
         main.main()
 
+    def draw_status(self, screen, player, ticks):
+        tipo = pygame.font.Font('files/fonts/coders_crux.ttf', 20)
+        text = tipo.render("Vida: ", 1, cons.WHITE)
+        screen.blit(text, (20, cons.SCREEN_HEIGHT + 20))
+        if (player.blood > 75):
+            color = cons.GREEN
+        elif (player.blood > 50):
+            color = cons.YELLOW
+        else:
+            color = cons.RED
+        pygame.draw.rect(screen, color, (60, cons.SCREEN_HEIGHT + 20, player.blood, 10))
+
+        tipo = pygame.font.Font('files/fonts/coders_crux.ttf', 20)
+        text = tipo.render("Kunais restantes: ", 1, cons.WHITE)
+        screen.blit(text, (190, cons.SCREEN_HEIGHT + 20))
+
+        if(player.kunais >= 20):
+            color = cons.GREEN
+        elif(player.kunais >= 10):
+            color = cons.YELLOW
+        else:
+            color = cons.RED
+
+        tipo = pygame.font.Font('files/fonts/coders_crux.ttf', 20)
+        text = tipo.render(str(player.kunais), 1, color)
+        screen.blit(text, (320, cons.SCREEN_HEIGHT + 20))
+
+        tipo = pygame.font.Font('files/fonts/coders_crux.ttf', 20)
+        text = tipo.render("Tiempo restante: ", 1, cons.WHITE)
+        screen.blit(text, (350, cons.SCREEN_HEIGHT + 20))
+
+        remaining = 120000 - ticks
+        seconds = (remaining / 1000) % 60
+        seconds = int(seconds)
+        minutes = (remaining / (1000 * 60)) % 60
+        minutes = int(minutes)
+
+        tipo = pygame.font.Font('files/fonts/coders_crux.ttf', 20)
+        text = tipo.render(str(minutes) + ":" + str(seconds), 1, cons.WHITE)
+        screen.blit(text, (470, cons.SCREEN_HEIGHT + 20))
+
+
     def start(self):
         pygame.display.init()
         pygame.font.init()
         pygame.mixer.init()
 
-        size = [cons.SCREEN_WIDTH, cons.SCREEN_HEIGHT]
+        size = [cons.SCREEN_WIDTH, cons.SCREEN_HEIGHT + 100]
         screen = pygame.display.set_mode(size)
-
-        pygame.display.set_caption("Platformer with sprite sheets")
+        pygame.display.set_caption("The saviour - LVL 1")
 
         # Create all the levels
         level_list = []
 
         # Set the current level
         active_sprite_list = pygame.sprite.Group()
-        current_level_no = 0
 
         # Loop until the user clicks the close button.
         done = False
@@ -106,6 +147,12 @@ class game():
                         new_kunai = characters.Kunai(player.dir, player.rect.x, player.rect.y + 40)
                         player_group.add(new_kunai)
                         player_kunai.add(new_kunai)
+                    if evento.key == pygame.K_e:
+                        for elementx in current_level.addons:
+                            if(checkCollision(elementx,player)):
+                                if(elementx.tipo == "portal"):
+                                    print("TEPEADO")
+
 
             ## Checkeo de colisiones
             for element in current_level.plataforma_lista:
@@ -123,11 +170,19 @@ class game():
                 player.rect.x = 120
                 current_level.Mover_fondo(dif, 0)
 
+            #if(pygame.time.get_ticks() >= 60000):
+            #    print("game over")
 
             pos_actual = player.rect.x + current_level.mov_fondo
             if pos_actual < current_level.limite:
                 player.rect.x = 120
-                print("pasaste")
+                self.current_nivel_no+=1
+                if(self.current_nivel_no == 1):
+                    current_level = levels.Nivel_01(player)
+                elif(self.current_nivel_no == 2):
+                    current_level = levels.Nivel_02(player)
+                elif(self.current_nivel_no == 3):
+                    print("Ya papi")
 
             # Update the player.
             active_sprite_list.update()
@@ -141,7 +196,7 @@ class game():
             current_level.draw(screen)
             active_sprite_list.draw(screen)
             player_group.draw(screen)
-
+            self.draw_status(screen,player, pygame.time.get_ticks())
             clock.tick(60)
 
             pygame.display.flip()
