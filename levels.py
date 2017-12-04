@@ -156,40 +156,19 @@ class Nivel_02(Nivel):
         self.addons = pygame.sprite.Group()
         self.fondo = pygame.transform.scale(pygame.image.load("files/enviroment/background_02.png"), (3000,600))
         nivel = [
-                    [330, 460, "muro_verde"],
-                    [540, 320, "muro_verde"],
-                    [630, 220, "muro_verde"],
-                    [990, 120, "caja_x"],
-                    [1129, 120, "caja_x"],
-                    [1198, 120, "caja_x"],
-                    [1267, 120, "caja_x"],
-                    [1336, 120, "caja_x"],
+                    [330, cons.SCREEN_HEIGHT-50, "spike"],
+                    [350, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [370, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [390, cons.SCREEN_HEIGHT - 50, "spike"],
 
-                    [1120, -4, "caja_x"],
-                    [1400, -60, "caja_x"],
-
-
-
-                    [1120, 300, "caja"],
-
-                    [1800, 30, "portal"],
-                    [1800, 100, "caja_x"],
-
-                    [2000, 200, "caja"],
-                    [2150, 300, "caja"],
-                    [2300, 400, "caja"],
-                    [1500, cons.SCREEN_HEIGHT-100, "caja"],
-                    [1800, cons.SCREEN_HEIGHT-100, "caja"],
+                    [490, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [510, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [530, cons.SCREEN_HEIGHT - 50, "spike"],
 
         ]
 
         enemigos_config = [
-                            characters.Enemigo1(1350,40, 50),
-                            characters.Enemigo1(1450,cons.SCREEN_HEIGHT-80, 255),
-                            characters.Enemigo2(1520,cons.SCREEN_HEIGHT-100, self.plataforma_lista),
-                            characters.Enemigo2(1810, cons.SCREEN_HEIGHT - 100, self.plataforma_lista),
-                            characters.Enemigo1(2350, cons.SCREEN_HEIGHT-80, 100),
-                            characters.Enemigo2(2400, cons.SCREEN_HEIGHT - 80, self.plataforma_lista),
+
 
         ]
         for en in enemigos_config:
@@ -200,7 +179,8 @@ class Nivel_02(Nivel):
             bloque.get_from_tipo()
             bloque.jugador = self.jugador
             bloque.update_rect()
-            if (plataforma[2] != "portal"):
-                self.plataforma_lista.add(bloque)
-            else:
+            if(plataforma[2] in ["portal","spike"]):
                 self.addons.add(bloque)
+            else:
+
+                self.plataforma_lista.add(bloque)

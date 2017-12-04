@@ -36,5 +36,7 @@ class Plataforma(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(pygame.image.load("files\enviroment\portal_b.png"), (50, 50))
         elif(self.tipo == "portal_m"):
             self.image = pygame.transform.scale(pygame.image.load("files\enviroment\portal_m.png"), (50, 50))
+        elif(self.tipo == "spike"):
+            self.image = pygame.transform.scale(pygame.image.load("files\enviroment\spike.png"), (20, 50))
         else:
             self.image = self.matriz[0][0]

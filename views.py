@@ -122,7 +122,7 @@ class game():
         player_group.add(player)
 
 
-        current_level = levels.Nivel_01(player)
+        current_level = levels.Nivel_02(player)
         player.nivel = current_level
         in_portal=False
         sound_die = True
@@ -144,11 +144,11 @@ class game():
                     self.go_menu()
 
                 if evento.type == pygame.KEYDOWN:
-                    if evento.key == pygame.K_LEFT:
+                    if evento.key == pygame.K_LEFT and player.blood > 0:
                         player.ir_izquierda()
-                    if evento.key == pygame.K_RIGHT:
+                    if evento.key == pygame.K_RIGHT and player.blood > 0:
                         player.ir_derecha()
-                    if evento.key == pygame.K_UP:
+                    if evento.key == pygame.K_UP and player.blood > 0:
                         player.saltar()
 
                 if evento.type == pygame.KEYUP:
@@ -165,6 +165,7 @@ class game():
                     if evento.key == pygame.K_e:
                         for elementx in current_level.addons:
                             if(checkCollision(elementx,player)):
+                                print(elementx.tipo)
                                 if(elementx.tipo == "portal"):
                                     current_level = levels.Portal(player)
                                     player.nivel = current_level
@@ -181,10 +182,16 @@ class game():
                                     print("game_over")
 
 
+
             ## Checkeo de colisiones
             for element in current_level.plataforma_lista:
                 pygame.sprite.spritecollide(element, player_kunai, True)
-
+            for elementx in current_level.addons:
+                if (checkCollision(elementx, player)):
+                    if (elementx.tipo == "spike"):
+                        print("Ehh")
+                        player.blood = 0
+                        player.die()
 
             for enemigo in current_level.enemigos_lista:
                 if (checkCollision(player, enemigo)):
