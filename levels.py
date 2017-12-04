@@ -15,6 +15,7 @@ class Nivel(object):
         self.plataforma_lista = pygame.sprite.Group()
         self.enemigos_lista = pygame.sprite.Group()
         self.elementos_lista = pygame.sprite.Group()
+        self.balas_lista = pygame.sprite.Group()
         self.addons = pygame.sprite.Group()
         self.jugador = jugador
 
@@ -24,6 +25,7 @@ class Nivel(object):
         self.enemigos_lista.update()
         self.elementos_lista.update()
         self.addons.update()
+        self.balas_lista.update()
 
     def draw(self, pantalla):
         # Dibujamos fondo
@@ -34,6 +36,7 @@ class Nivel(object):
         self.enemigos_lista.draw(pantalla)
         self.elementos_lista.draw(pantalla)
         self.addons.draw(pantalla)
+        self.balas_lista.draw(pantalla)
 
     def Mover_fondo(self, mov_x, mov_y):
         self.mov_fondo += mov_x
@@ -154,6 +157,7 @@ class Nivel_02(Nivel):
         self.limite=-3000
         self.enemigos_lista=pygame.sprite.Group()
         self.addons = pygame.sprite.Group()
+        self.balas_lista=pygame.sprite.Group()
         self.fondo = pygame.transform.scale(pygame.image.load("files/enviroment/background_02.png"), (3000,600))
         nivel = [
                     [330, cons.SCREEN_HEIGHT-50, "spike"],
@@ -168,7 +172,7 @@ class Nivel_02(Nivel):
         ]
 
         enemigos_config = [
-
+                            characters.Enemigo3(560, cons.SCREEN_HEIGHT-100, 100, self)
 
         ]
         for en in enemigos_config:
@@ -182,5 +186,13 @@ class Nivel_02(Nivel):
             if(plataforma[2] in ["portal","spike"]):
                 self.addons.add(bloque)
             else:
-
                 self.plataforma_lista.add(bloque)
+    def draw(self, pantalla):
+        # Dibujamos fondo
+        pantalla.fill(cons.BLACK)
+        pantalla.blit(self.fondo, (0,0))
+        self.plataforma_lista.draw(pantalla)
+        self.enemigos_lista.draw(pantalla)
+        self.elementos_lista.draw(pantalla)
+        self.addons.draw(pantalla)
+        self.balas_lista.draw(pantalla)

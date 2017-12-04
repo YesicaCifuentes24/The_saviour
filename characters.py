@@ -119,6 +119,62 @@ class Enemigo2(pygame.sprite.Sprite):
             self.cambio_y = 0
 
 
+class Enemy_shot(pygame.sprite.Sprite):
+    cambio_x = 8
+    dir = "R"
+    nivel = None
+    def __init__(self, direccion, x,y):
+        super().__init__()
+        self.dir = direccion
+        self.image = pygame.transform.scale(pygame.image.load("files\characters\enemies\enemy3\shot.png"),(40, 40))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def update(self):
+        if(self.dir == "R"):
+            self.rect.x += self.cambio_x
+        else:
+            self.rect.x -= self.cambio_x
+
+class Enemigo3(pygame.sprite.Sprite):
+    delay_shot = 0
+    shot=100
+    shot_dir = "L"
+    level = None
+    list = None
+    def __init__(self, x, y, shot, level):
+        super().__init__()
+        self.image = mirror_img(pygame.transform.scale(pygame.image.load("files\characters\enemies\enemy3\Attack3.png"),(60, 100)))
+        self.imagel = mirror_img(pygame.transform.scale(pygame.image.load("files\characters\enemies\enemy3\Attack3.png"),(60, 100)))
+        self.imager = pygame.transform.scale(pygame.image.load("files\characters\enemies\enemy3\Attack3.png"),(60, 100))
+        self.rect = self.image.get_rect()
+        self.blood = 150
+        self.rect.x = x
+        self.rect.y = y
+        self.shot = shot
+        self.level = level
+
+    def extract_direction(self):
+        if(self.rect.x - self.level.jugador.rect.x < 0):
+            self.shot_dir = "R"
+            self.image = self.imager
+        else:
+            self.shot_dir = "L"
+            self.image = self.imagel
+    def disparar(self):
+
+        sh = Enemy_shot(self.shot_dir, self.rect.x, self.rect.y+20)
+        self.level.balas_lista.add(sh)
+
+    def update(self):
+        self.extract_direction()
+        if(self.delay_shot >= self.shot):
+            self.delay_shot = 0
+            self.disparar()
+        else:
+            self.delay_shot+=1
+
 
 
 class Kunai(pygame.sprite.Sprite):
