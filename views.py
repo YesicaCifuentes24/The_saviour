@@ -91,6 +91,14 @@ class game():
         text = tipo.render(str(minutes) + ":" + str(seconds), 1, cons.WHITE)
         screen.blit(text, (470, cons.SCREEN_HEIGHT + 20))
 
+    def game_over(self, screen):
+        screen.fill(cons.BLACK)
+        tipo = pygame.font.Font('files/fonts/coders_crux.ttf', 200)
+        text = tipo.render("GAME OVER", 1, cons.RED)
+        screen.blit(text, (60, cons.SCREEN_HEIGHT / 2 - 20))
+        tipo = pygame.font.Font('files/fonts/coders_crux.ttf', 40)
+        text = tipo.render("Press e to continue", 1, cons.RED)
+        screen.blit(text, (cons.SCREEN_WIDTH / 2 - 150, cons.SCREEN_HEIGHT / 2 + 100))
 
     def start(self):
         pygame.display.init()
@@ -137,7 +145,8 @@ class game():
                 player.die()
 
             if(player.muerto):
-                print("game_over")
+                self.game_over(screen)
+
 
             for evento in pygame.event.get():  # El usuario realizó alguna acción
                 if evento.type == pygame.QUIT:  # Si el usuario hizo click en salir
@@ -157,12 +166,14 @@ class game():
                     if evento.key == pygame.K_RIGHT and player.cambio_x > 0:
                         player.stop()
                     if evento.key == pygame.K_SPACE:
-                        if(player.kunais > 0):
+                        if(player.kunais > 0 and player.blood > 0):
                             new_kunai = characters.Kunai(player.dir, player.rect.x, player.rect.y + 40)
                             player_group.add(new_kunai)
                             player_kunai.add(new_kunai)
                             player.kunais-=1
                     if evento.key == pygame.K_e:
+                        if(player.muerto):
+                            self.go_menu()
                         for elementx in current_level.addons:
                             if(checkCollision(elementx,player)):
                                 print(elementx.tipo)
@@ -179,7 +190,7 @@ class game():
                                 elif(elementx.tipo == "portal_b"):
                                     print("Boss level")
                                 elif(elementx.tipo == "portal_m"):
-                                    print("game_over")
+                                    player.blood=0
 
 
 
@@ -253,20 +264,24 @@ class game():
                         player.nivel = current_level
                     elif(self.current_nivel_no == 3):
                         print("Ya papi")
+                        
+            if(pygame.time.get_ticks() >= 120000):
+                player.blood=0
 
             # Update the player.
-            active_sprite_list.update()
+            if(not player.muerto):
+                active_sprite_list.update()
 
-            # Update items in the level
-            current_level.update()
-            player_group.update()
-            # If the player gets near the right side, shift the world left (-x)
+                # Update items in the level
+                current_level.update()
+                player_group.update()
+                # If the player gets near the right side, shift the world left (-x)
 
-            # ALL CODE TO DRAW SHOULD GO BELOW THIS COMMENT
-            current_level.draw(screen)
-            active_sprite_list.draw(screen)
-            player_group.draw(screen)
-            self.draw_status(screen,player, pygame.time.get_ticks())
+                # ALL CODE TO DRAW SHOULD GO BELOW THIS COMMENT
+                current_level.draw(screen)
+                active_sprite_list.draw(screen)
+                player_group.draw(screen)
+                self.draw_status(screen,player, pygame.time.get_ticks())
             clock.tick(60)
 
             pygame.display.flip()
