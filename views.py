@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 import levels
 import cons
 import characters
@@ -190,7 +190,7 @@ class game():
                         if(player.muerto):
                             self.go_menu()
                         if(winner):
-                            self.go_menu()
+                            sys.exit(0)
 
                         for elementx in current_level.addons:
                             if(checkCollision(elementx,player)):

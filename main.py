@@ -45,7 +45,11 @@ def main():
                         game.start()
 
                     if m.cursor == 1:
-                        print("Menu help")
+                        import time
+                        screen.fill(cons.BLACK)
+                        screen.blit(pygame.transform.scale(pygame.image.load("files/others/controls.png"), (800,600)), (0, 0))
+                        pygame.display.flip()
+                        time.sleep(5)
         m.draw_menu()
 
 if __name__ == "__main__":
