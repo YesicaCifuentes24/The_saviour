@@ -168,13 +168,59 @@ class Nivel_02(Nivel):
                     [490, cons.SCREEN_HEIGHT - 50, "spike"],
                     [510, cons.SCREEN_HEIGHT - 50, "spike"],
                     [530, cons.SCREEN_HEIGHT - 50, "spike"],
-                    [650, cons.SCREEN_HEIGHT - 72, "caja_x"],
+
+                    [800, cons.SCREEN_HEIGHT - 100, "caja_x"],
+                    [872, cons.SCREEN_HEIGHT - 100, "caja_x"],
+                    [944, cons.SCREEN_HEIGHT - 100, "caja_x"],
+                    [1050, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [1088, cons.SCREEN_HEIGHT - 100, "caja_x"],
+                    [1160, cons.SCREEN_HEIGHT - 100, "caja_x"],
+
+
+                    [1240, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [1260, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [1280, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [1300, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [1304, cons.SCREEN_HEIGHT - 250, "caja_x"],
+
+                    [1890, cons.SCREEN_HEIGHT - 72, "caja"],
+                    [1962, cons.SCREEN_HEIGHT - (72*2), "caja"],
+                    [2034, cons.SCREEN_HEIGHT - (72 * 3), "caja"],
+
+                    [2034, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2054, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2074, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2094, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2114, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2134, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2154, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2174, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2194, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2214, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2234, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2254, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2274, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2294, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2314, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2334, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [2354, cons.SCREEN_HEIGHT - 50, "spike"],
+
+
+                    [2300, cons.SCREEN_HEIGHT - (72 * 3), "caja"],
+                    [2372, cons.SCREEN_HEIGHT - (72 * 2), "caja"],
+                    [2444, cons.SCREEN_HEIGHT - (72), "caja"],
+
 
         ]
 
         enemigos_config = [
-                            characters.Enemigo3(560, cons.SCREEN_HEIGHT-100, 100, self)
-
+                            characters.Enemigo4(580, cons.SCREEN_HEIGHT - 100, 100, self),
+                            characters.Enemigo1(990, cons.SCREEN_HEIGHT - (100+80), 45),
+                            characters.Enemigo3(1085, cons.SCREEN_HEIGHT - 200, 100, self),
+                            characters.Enemigo1(1800, cons.SCREEN_HEIGHT - (80), 100),
+                            characters.Enemigo3(1895, cons.SCREEN_HEIGHT - (72+100), 100, self),
+                            characters.Enemigo4(2040, cons.SCREEN_HEIGHT - (100+(72*3)), 100, self),
+                            characters.Enemigo1(2900, cons.SCREEN_HEIGHT - (80), 80),
         ]
         for en in enemigos_config:
             self.enemigos_lista.add(en)

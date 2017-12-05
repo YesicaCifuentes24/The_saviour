@@ -122,7 +122,7 @@ class game():
         player_group.add(player)
 
 
-        current_level = levels.Nivel_02(player)
+        current_level = levels.Nivel_01(player)
         player.nivel = current_level
         in_portal=False
         sound_die = True
@@ -196,8 +196,12 @@ class game():
 
             for bala_en in current_level.balas_lista:
                 if(checkCollision(player,bala_en)):
-                    player.blood -= 15
+                    if(bala_en.tipo == "bone"):
+                        player.blood -= 15
+                    else:
+                        player.blood -= 30
                     current_level.balas_lista.remove(bala_en)
+
 
             for enemigo in current_level.enemigos_lista:
                 if (checkCollision(player, enemigo)):
