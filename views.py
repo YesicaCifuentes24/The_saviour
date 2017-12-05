@@ -116,7 +116,7 @@ class game():
 
         size = [cons.SCREEN_WIDTH, cons.SCREEN_HEIGHT + 100]
         screen = pygame.display.set_mode(size)
-        pygame.display.set_caption("The saviour - LVL 1")
+
 
         # Create all the levels
         level_list = []
@@ -159,8 +159,6 @@ class game():
 
             if(self.current_nivel_no == 3 and len(current_level.enemigos_lista) == 0):
                 winner = True
-            else:
-                print("Epa", len(current_level.enemigos_lista))
 
             if(winner):
                 self.winner(screen)
@@ -219,6 +217,7 @@ class game():
             for element in current_level.plataforma_lista:
                 pygame.sprite.spritecollide(element, player_kunai, True)
                 pygame.sprite.spritecollide(element, current_level.balas_lista, True)
+
             for elementx in current_level.addons:
                 if (checkCollision(elementx, player)):
                     if (elementx.tipo == "spike"):

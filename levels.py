@@ -46,8 +46,6 @@ class Nivel(object):
             enemigo.rect.x += mov_x
         for addon in self.addons:
             addon.rect.x += mov_x
-        for bullet in self.balas_lista:
-            bullet.rect.x += mov_x
 
         self.mov_fondo += mov_y
         for plataforma in self.plataforma_lista:
@@ -56,8 +54,6 @@ class Nivel(object):
             enemigo.rect.y += mov_y
         for addon in self.addons:
             addon.rect.y += mov_y
-        for bullet in self.balas_lista:
-            bullet.rect.y += mov_y
         for elemento in self.elementos_lista:
             if(not elemento.bloqueado):
                 elemento.rect.y += mov_y
@@ -67,6 +63,7 @@ class Nivel_01(Nivel):
 
     def __init__(self, jugador):
         super().__init__(jugador)
+        pygame.display.set_caption("The saviour - LVL 1")
         self.limite=-3000
         self.enemigos_lista=pygame.sprite.Group()
         self.addons = pygame.sprite.Group()
@@ -127,6 +124,7 @@ class Portal(Nivel):
 
     def __init__(self, jugador):
         super().__init__(jugador)
+        pygame.display.set_caption("The saviour - SECRET UNIVERSE")
         self.limite=-100
         self.enemigos_lista=pygame.sprite.Group()
         self.addons = pygame.sprite.Group()
@@ -161,6 +159,7 @@ class Nivel_02(Nivel):
 
     def __init__(self, jugador):
         super().__init__(jugador)
+        pygame.display.set_caption("The saviour - LVL 2")
         self.limite=-3000
         self.enemigos_lista=pygame.sprite.Group()
         self.addons = pygame.sprite.Group()
@@ -256,6 +255,7 @@ class Boss_level(Nivel):
 
     def __init__(self, jugador):
         super().__init__(jugador)
+        pygame.display.set_caption("The saviour - LVL FINAL [Boss fight]")
         self.limite=-1500
         self.enemigos_lista=pygame.sprite.Group()
         self.addons = pygame.sprite.Group()
