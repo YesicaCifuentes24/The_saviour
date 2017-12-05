@@ -100,6 +100,15 @@ class game():
         text = tipo.render("Press e to continue", 1, cons.RED)
         screen.blit(text, (cons.SCREEN_WIDTH / 2 - 150, cons.SCREEN_HEIGHT / 2 + 100))
 
+    def winner(self,screen):
+        screen.fill(cons.BLACK)
+        tipo = pygame.font.Font('files/fonts/coders_crux.ttf', 200)
+        text = tipo.render("GANASTE !!", 1, cons.GREEN)
+        screen.blit(text, (60, cons.SCREEN_HEIGHT / 2 - 20))
+        tipo = pygame.font.Font('files/fonts/coders_crux.ttf', 40)
+        text = tipo.render("Press e to continue", 1, cons.GREEN)
+        screen.blit(text, (cons.SCREEN_WIDTH / 2 - 150, cons.SCREEN_HEIGHT / 2 + 100))
+
     def start(self):
         pygame.display.init()
         pygame.font.init()
@@ -133,6 +142,7 @@ class game():
         current_level = levels.Nivel_01(player)
         player.nivel = current_level
         in_portal=False
+        winner = False
         sound_die = True
         # -------- Main Program Loop -----------
         while not done:
@@ -147,6 +157,13 @@ class game():
             if(player.muerto):
                 self.game_over(screen)
 
+            if(self.current_nivel_no == 3 and len(current_level.enemigos_lista) == 0):
+                winner = True
+            else:
+                print("Epa", len(current_level.enemigos_lista))
+
+            if(winner):
+                self.winner(screen)
 
             for evento in pygame.event.get():  # El usuario realizó alguna acción
                 if evento.type == pygame.QUIT:  # Si el usuario hizo click en salir
@@ -174,9 +191,11 @@ class game():
                     if evento.key == pygame.K_e:
                         if(player.muerto):
                             self.go_menu()
+                        if(winner):
+                            self.go_menu()
+
                         for elementx in current_level.addons:
                             if(checkCollision(elementx,player)):
-                                print(elementx.tipo)
                                 if(elementx.tipo == "portal"):
                                     current_level = levels.Portal(player)
                                     player.nivel = current_level
@@ -188,7 +207,9 @@ class game():
                                     player.kunais += 30
                                     current_level.addons.remove(elementx)
                                 elif(elementx.tipo == "portal_b"):
-                                    print("Boss level")
+                                    current_level = levels.Boss_level(player)
+                                    player.nivel = current_level
+                                    self.current_nivel_no = 3
                                 elif(elementx.tipo == "portal_m"):
                                     player.blood=0
 
@@ -201,7 +222,6 @@ class game():
             for elementx in current_level.addons:
                 if (checkCollision(elementx, player)):
                     if (elementx.tipo == "spike"):
-                        print("Ehh")
                         player.blood = 0
                         player.die()
 
@@ -209,8 +229,10 @@ class game():
                 if(checkCollision(player,bala_en)):
                     if(bala_en.tipo == "bone"):
                         player.blood -= 15
-                    else:
+                    elif(bala_en.tipo == "blast"):
                         player.blood -= 30
+                    elif (bala_en.tipo == "blast_boss"):
+                        player.blood -= 70
                     current_level.balas_lista.remove(bala_en)
 
 
@@ -259,17 +281,19 @@ class game():
                     self.current_nivel_no+=1
                     if(self.current_nivel_no == 1):
                         current_level = levels.Nivel_01(player)
+                        player.nivel = current_level
                     elif(self.current_nivel_no == 2):
                         current_level = levels.Nivel_02(player)
                         player.nivel = current_level
                     elif(self.current_nivel_no == 3):
-                        print("Ya papi")
-                        
+                        current_level = levels.Boss_level(player)
+                        player.nivel = current_level
+
             if(pygame.time.get_ticks() >= 120000):
                 player.blood=0
 
             # Update the player.
-            if(not player.muerto):
+            if(not player.muerto and not winner):
                 active_sprite_list.update()
 
                 # Update items in the level

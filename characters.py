@@ -222,6 +222,131 @@ class Enemigo4(pygame.sprite.Sprite):
         else:
             self.delay_shot += 1
 
+class Boss_shot(pygame.sprite.Sprite):
+    nivel=None
+    tipo = "blast_boss"
+    i=0
+    i2=0
+    def __init__(self, x,y): #img para cargar, y su padre(de donde debe salir la bala)
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.transform.scale(pygame.image.load("files\characters\enemies\Boss\shot.png").convert_alpha(),(80,80))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.speed = 1
+        self.cont = 0
+        self.tipo = "blast_boss"
+        self.moves = []
+        self.bloqueado=False
+
+    def go(self,pos):
+        p = [[self.rect.x,self.rect.y],pos]
+        x0 = p[0][0]
+        y0 = p[0][1]
+        x1 = p[1][0]
+        y1 = p[1][1]
+        res = []
+        dx = (x1 - x0)
+        dy = (y1 - y0)
+        if (dy < 0) :
+            dy = -1*dy
+            stepy = -1
+        else :
+            stepy = 1
+        if (dx < 0) :
+            dx = -1*dx
+            stepx = -1
+        else :
+            stepx = 1
+        x = x0
+        y = y0
+        if(dx>dy) :
+            p = 2*dy - dx
+            incE = 2*dy
+            incNE = 2*(dy-dx)
+            while (x != x1) :
+                x = x + stepx
+                if (p < 0) :
+                    p = p + incE
+                else :
+                    y = y + stepy
+                    p = p + incNE
+                p_new = [x, y]
+                res.append(p_new)
+        else :
+            p = 2*dx - dy
+            incE = 2*dx
+            incNE = 2*(dx-dy)
+            while (y != y1) :
+                y = y + stepy
+                if (p < 0) :
+                    p = p + incE
+                else :
+                    x = x + stepx
+                    p = p + incNE
+
+                p_new = [x, y]
+                res.append(p_new)
+        self.moves=res
+        self.i = 0
+
+    def update(self):
+        for elemento in self.nivel.plataforma_lista:
+            if(checkCollision(self,elemento)):
+                self.nivel.balas_lista.remove(self)
+                self.nivel.plataforma_lista.remove(elemento)
+
+        if(self.cont == 0):
+            if(self.i < len(self.moves)):
+                self.rect.x,self.rect.y = self.moves[self.i][0],self.moves[self.i][1]
+                self.i += 1
+            else:
+                self.i=0
+
+class Boss(pygame.sprite.Sprite):
+    delay_shot = 0
+    shot = 100
+    shot_dir = "L"
+    level = None
+    list = None
+
+    def __init__(self, x, y, shot, level):
+        super().__init__()
+        self.image = mirror_img(
+            pygame.transform.scale(pygame.image.load("files\characters\enemies\Boss\Walk (1).png"), (60, 100)))
+        self.imagel = mirror_img(
+            pygame.transform.scale(pygame.image.load("files\characters\enemies\Boss\Walk (1).png"), (60, 100)))
+        self.imager = pygame.transform.scale(pygame.image.load("files\characters\enemies\Boss\Walk (1).png"),
+                                             (60, 100))
+        self.rect = self.image.get_rect()
+        self.blood = 1500
+        self.rect.x = x
+        self.rect.y = y
+        self.shot = shot
+        self.level = level
+
+    def extract_direction(self):
+        if (self.rect.x - self.level.jugador.rect.x < 0):
+            self.shot_dir = "R"
+            self.image = self.imager
+        else:
+            self.shot_dir = "L"
+            self.image = self.imagel
+
+    def disparar(self):
+
+        bl = Boss_shot(self.rect.x, self.rect.y)
+        bl.nivel = self.level
+        bl.go((self.level.jugador.rect.x, self.level.jugador.rect.y))
+        self.level.balas_lista.add(bl)
+
+    def update(self):
+        self.extract_direction()
+        if (self.delay_shot >= self.shot):
+            self.delay_shot = 0
+            self.disparar()
+        else:
+            self.delay_shot += 1
 
 class Kunai(pygame.sprite.Sprite):
     cambio_x = 8

@@ -46,6 +46,8 @@ class Nivel(object):
             enemigo.rect.x += mov_x
         for addon in self.addons:
             addon.rect.x += mov_x
+        for bullet in self.balas_lista:
+            bullet.rect.x += mov_x
 
         self.mov_fondo += mov_y
         for plataforma in self.plataforma_lista:
@@ -54,6 +56,8 @@ class Nivel(object):
             enemigo.rect.y += mov_y
         for addon in self.addons:
             addon.rect.y += mov_y
+        for bullet in self.balas_lista:
+            bullet.rect.y += mov_y
         for elemento in self.elementos_lista:
             if(not elemento.bloqueado):
                 elemento.rect.y += mov_y
@@ -92,6 +96,9 @@ class Nivel_01(Nivel):
                     [1500, cons.SCREEN_HEIGHT-100, "caja"],
                     [1800, cons.SCREEN_HEIGHT-100, "caja"],
 
+
+                    [2500, cons.SCREEN_HEIGHT-20, "medkit"],
+
         ]
 
         enemigos_config = [
@@ -111,7 +118,7 @@ class Nivel_01(Nivel):
             bloque.get_from_tipo()
             bloque.jugador = self.jugador
             bloque.update_rect()
-            if (plataforma[2] != "portal"):
+            if (not (plataforma[2] in ["portal", "medkit"])):
                 self.plataforma_lista.add(bloque)
             else:
                 self.addons.add(bloque)
@@ -158,7 +165,7 @@ class Nivel_02(Nivel):
         self.enemigos_lista=pygame.sprite.Group()
         self.addons = pygame.sprite.Group()
         self.balas_lista=pygame.sprite.Group()
-        self.fondo = pygame.transform.scale(pygame.image.load("files/enviroment/background_02.png"), (3000,600))
+        self.fondo = pygame.transform.scale(pygame.image.load("files/enviroment/background_x02.png"), (3000,600))
         nivel = [
                     [330, cons.SCREEN_HEIGHT-50, "spike"],
                     [350, cons.SCREEN_HEIGHT - 50, "spike"],
@@ -238,6 +245,46 @@ class Nivel_02(Nivel):
         # Dibujamos fondo
         pantalla.fill(cons.BLACK)
         pantalla.blit(self.fondo, (0,0))
+        self.plataforma_lista.draw(pantalla)
+        self.enemigos_lista.draw(pantalla)
+        self.elementos_lista.draw(pantalla)
+        self.addons.draw(pantalla)
+        self.balas_lista.draw(pantalla)
+
+
+class Boss_level(Nivel):
+
+    def __init__(self, jugador):
+        super().__init__(jugador)
+        self.limite=-1500
+        self.enemigos_lista=pygame.sprite.Group()
+        self.addons = pygame.sprite.Group()
+        self.fondo = pygame.transform.scale(pygame.image.load("files/enviroment/background_02.png"), (800,600))
+        nivel = [
+            [330, 500, "muro_verde"],
+            [540, 320, "muro_verde"],
+            [200, cons.SCREEN_HEIGHT-20, "medkit"],
+            [400, cons.SCREEN_HEIGHT-60, "backpack"],
+        ]
+        enemigos_config = [
+            characters.Boss(500, cons.SCREEN_HEIGHT - 100, 200, self)
+        ]
+        for en in enemigos_config:
+            self.enemigos_lista.add(en)
+        for plataforma in nivel:
+            bloque = Plataforma(plataforma[0], plataforma[1])
+            bloque.tipo=plataforma[2]
+            bloque.get_from_tipo()
+            bloque.jugador = self.jugador
+            bloque.update_rect()
+            if(bloque.tipo in ["medkit","backpack",]):
+                self.addons.add(bloque)
+            else:
+                self.plataforma_lista.add(bloque)
+
+    def draw(self, pantalla):
+        pantalla.fill(cons.BLACK)
+        pantalla.blit(self.fondo, (0, 0))
         self.plataforma_lista.draw(pantalla)
         self.enemigos_lista.draw(pantalla)
         self.elementos_lista.draw(pantalla)
