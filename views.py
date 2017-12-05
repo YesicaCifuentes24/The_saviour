@@ -186,12 +186,18 @@ class game():
             ## Checkeo de colisiones
             for element in current_level.plataforma_lista:
                 pygame.sprite.spritecollide(element, player_kunai, True)
+                pygame.sprite.spritecollide(element, current_level.balas_lista, True)
             for elementx in current_level.addons:
                 if (checkCollision(elementx, player)):
                     if (elementx.tipo == "spike"):
                         print("Ehh")
                         player.blood = 0
                         player.die()
+
+            for bala_en in current_level.balas_lista:
+                if(checkCollision(player,bala_en)):
+                    player.blood -= 15
+                    current_level.balas_lista.remove(bala_en)
 
             for enemigo in current_level.enemigos_lista:
                 if (checkCollision(player, enemigo)):

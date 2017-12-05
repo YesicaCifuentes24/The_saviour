@@ -168,6 +168,7 @@ class Nivel_02(Nivel):
                     [490, cons.SCREEN_HEIGHT - 50, "spike"],
                     [510, cons.SCREEN_HEIGHT - 50, "spike"],
                     [530, cons.SCREEN_HEIGHT - 50, "spike"],
+                    [650, cons.SCREEN_HEIGHT - 72, "caja_x"],
 
         ]
 
